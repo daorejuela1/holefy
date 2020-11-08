@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'holefy_app.apps.LiveDemoConfig',
     "mapbox_location_field",
     "bootstrap4",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [

@@ -118,15 +118,32 @@ if (!mapboxgl.supported()) {
 
                 $(document).trigger("reverse-geocode", [id, e.result.place_name,])
             });
-
-            map.on("click", function (e) {
-                $("#" + id + "-map-mapbox-location-field .mapboxgl-marker.mapboxgl-marker-anchor-center").not(".mapboxgl-user-location-dot").remove();
-                input.val(translate_to_reversed_string(e.lngLat));
-                var marker = new mapboxgl.Marker({draggable: false, color: map_attrs[id].marker_color,});
-                marker.setLngLat(e.lngLat)
+            var HolesAPI = "http://127.0.0.1:8001/api/v1/holes/";
+            $.getJSON( HolesAPI, {
+            })
+              .done(function( data ) {
+                  //console.log(data);
+                $.each(data, function( key, val ) {
+                  var locpos = val.location.replace(/[()]/g,"").split(", ").map(Number);
+                  console.log(val)
+                  var Eu = {lng: locpos[0], lat:locpos[1]};
+                  var popup = new mapboxgl.Popup({ offset: 25, maxWidth: "80px" }).setHTML(
+                    '<a href="http://127.0.0.1:8001/places/'+val.id+'">Alertar</a><p><b>' + 'Hueco' + '</b> ' + val.name + '</p><b>Nacimiento:</b> ' + val.created_at.slice(0, 10) + '<p><b>Reportes:</b> ' + val.users.length + ' </p>'
+                    );
+                  var marker1 = new mapboxgl.Marker({draggable: false, color: "red"});
+                marker1.setLngLat(Eu)
+                .setPopup(popup)
                     .addTo(map);
+                });
+            })
+            var onclickmarker = new mapboxgl.Marker({draggable: false, color: map_attrs[id].marker_color,});
+            map.on("click", function (e) {
+                //$("#" + id + "-map-mapbox-location-field .mapboxgl-marker.mapboxgl-marker-anchor-center").not(".mapboxgl-user-location-dot").remove();
+                input.val(translate_to_reversed_string(e.lngLat));
 
-
+                onclickmarker.setLngLat(e.lngLat)
+                    .addTo(map);
+                console.log(e.target)
                 var url = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + translate_to_string(e.lngLat) + ".json?access_token=" + mapboxgl.accessToken;
                 $.get(url, function (data) {
                     try {
