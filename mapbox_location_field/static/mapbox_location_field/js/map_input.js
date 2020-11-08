@@ -130,7 +130,8 @@ if (!mapboxgl.supported()) {
                   var popup = new mapboxgl.Popup({ offset: 25, maxWidth: "80px" }).setHTML(
                     '<a href="http://127.0.0.1:8001/places/'+val.id+'">Alertar</a><p><b>' + 'Hueco' + '</b> ' + val.name + '</p><b>Nacimiento:</b> ' + val.created_at.slice(0, 10) + '<p><b>Reportes:</b> ' + val.users.length + ' </p>'
                     );
-                  var marker1 = new mapboxgl.Marker({draggable: false, color: "red"});
+                  var ColorsArray = new Array("yellow", "blue", "red");
+                  var marker1 = new mapboxgl.Marker({draggable: false, color: ColorsArray[val.level - 1]});
                 marker1.setLngLat(Eu)
                 .setPopup(popup)
                     .addTo(map);
